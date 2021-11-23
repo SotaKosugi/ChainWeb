@@ -1,0 +1,7 @@
+body {
+    margin: 0;
+    background-image:url(../white_background.jpg);
+    background-size:  cover;         
+    background-repeat: repeat;
+    background-position:center;
+  }

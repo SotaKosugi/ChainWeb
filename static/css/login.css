@@ -1,0 +1,34 @@
+div.head{
+	position: relative;
+}
+
+#chain{
+	width: 90px;
+    height: 90px;
+	position: absolute;
+	left: 150px;
+	top: 0px;
+}
+
+#headline{
+	position: absolute;
+	top: 85px;
+	left: px;
+}
+
+/*↑ここまでヘッダ*/
+
+div.login{
+    font-size: 20px;
+    position: relative;
+    left: 10px;
+    top: 115px;
+}
+
+#login_button{
+    font-size: 20px;
+    position: absolute;
+    left: 130px;
+    top: 100px;
+    background-color: rgb(255, 255, 255);
+}

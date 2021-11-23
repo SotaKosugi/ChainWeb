@@ -1,0 +1,272 @@
+{% load static %}
+ <!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html lang="jp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>勉強画面</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'css/study.css' %}">
+
+</head>
+<body>
+  <div id="container">
+
+    <p>User: {{ user.username }}</p> 
+    
+    <a href="{% url 'index' %}">ホーム&nbsp;&nbsp;</a>
+    <a href="{% url 'studylog' %}">記録&nbsp;&nbsp;</a>
+    <a href="{% url 'study' %}">勉強開始！&nbsp;&nbsp;</a>
+    <a href="{% url 'goalconfig' %}">目標&nbsp;&nbsp;</a>
+    <a href="{% url 'upload' %}">アップロード&nbsp;&nbsp;</a>
+    <a href="{% url 'config' %}">設定&nbsp;&nbsp;</a>
+
+    <p><a href="{% url 'logout' %}">ログアウト</a></p>
+
+    <h1 id="timer">00:00:00</h1>
+
+    <video id="local" playsinline autoplay muted></video>
+    <!--<video id="recorded" playsinline loop></video>-->
+
+    <div>
+      <button id="start" disabled>映像取得</button>
+      <button id="record" disabled>録画開始</button>
+      <button id="upload" disabled>アップロード</button>
+    </div>
+
+  <!-- include adapter for srcObject shim -->
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script>
+    "use strict";
+
+    const SERVER = "http://localhost:8000/accounts/";
+    const localVideo = document.getElementById("local");
+    const recordedVideo = document.getElementById("recorded");
+    const startBtn = document.getElementById("start");
+    const recordBtn = document.getElementById("record");
+    const uploadBtn = document.getElementById("upload");
+    const timer = document.getElementById('timer');
+    let mediaRecorder;
+    let recordedBlobs;
+    //クリック時の時間を保持するための変数定義
+    let startTime;
+    //経過時刻を更新するための変数。 初めはだから0で初期化
+    let elapsedTime = 0;
+    //タイマーを止めるにはclearTimeoutを使う必要があり、そのためにはclearTimeoutの引数に渡すためのタイマーのidが必要
+    let timerId;
+    //タイマーをストップ -> 再開させたら0になってしまうのを避けるための変数。
+    let timeToadd = 0;
+
+    startBtn.disabled = false;
+
+    //webカメラの映像を取得して各変数に格納
+    function getLocalMediaStream(mediaStream) {
+      recordBtn.disabled = false;
+      const localStream = mediaStream;
+      localVideo.srcObject = mediaStream;
+      window.stream = mediaStream;
+    }
+
+    //webカメラの映像取得失敗時のエラー処理
+    function handleLocalMediaStreamError(error) {
+      console.log(`navigator.getUserMedia error: ${error}`);
+    }
+
+
+    function handleDataAvailable(event) {
+      if (event.data && event.data.size > 0) {
+        recordedBlobs.push(event.data);
+      }
+    }
+
+    //録画開始の処理
+    function startRecording() {
+      recordedBlobs = [];//録画映像が入るblob配列
+      const options = { mimeType: "video/webm;codecs=vp9" };
+
+      try {
+        mediaRecorder = new MediaRecorder(window.stream, options);
+      } catch (error) {
+        console.log(`Exception while creating MediaRecorder: ${error}`);
+        return;
+      }
+
+      console.log("Created MediaRecorder", mediaRecorder);
+      recordBtn.textContent = "録画停止";
+      uploadBtn.disabled = true;
+
+      mediaRecorder.onstop = event => {
+        console.log("Recorder stopped: ", event);
+      };
+
+      //blobに録画データを格納する
+      mediaRecorder.ondataavailable = handleDataAvailable;
+      mediaRecorder.start(10);
+      console.log("MediaRecorder started", mediaRecorder);
+    }
+
+    function stopRecording() {
+      mediaRecorder.stop();
+      console.log("Recorded media.");
+    }
+
+    startBtn.addEventListener("click", () => {
+      const constraints = {
+        video: {
+          width: 360,
+          height: 300,
+          frameRate:2,
+        }
+      };
+
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(getLocalMediaStream)
+        .catch(handleLocalMediaStreamError);
+
+      startBtn.disabled = true;
+    });
+
+    recordBtn.addEventListener("click", () => {
+
+      if (recordBtn.textContent === "録画開始") {
+        startRecording();
+        startTime = Date.now();
+        countUp();
+      } else {
+        stopRecording();
+        stream.getTracks().forEach(function(track){
+            track.stop();
+        });
+        clearTimeout(timerId);
+        recordBtn.textContent = "録画開始";
+        recordBtn.disabled = true;
+        uploadBtn.disabled = false;
+      }
+    });
+
+
+    uploadBtn.addEventListener("click", () => {
+      let today = new Date();
+      //filepathは2021/07/05/みたいな感じ
+      let filepath = today.getFullYear() + "/" + ('0' + (today.getMonth() + 1)).slice(-2) + "/" + ('0' + today.getDate()).slice(-2) + "/"  ;
+      //filenameは100639.webm （10時6分39秒）みたいな感じ
+      let filename =  ('0' + today.getHours()).slice(-2) + ('0' + today.getMinutes()).slice(-2) + ('0' + today.getSeconds()).slice(-2) + ".webm" ;
+      const blob = new Blob(recordedBlobs, { type: "video/webm" });
+      //const fd = new FormData();
+      //fd.append('video', blob, filename);
+      //fd.append('path', filepath);
+
+      //blobをbase64に変換
+      const reader = new FileReader();
+      let b64video;
+
+      reader.onload = function(){
+      
+          const b64 = reader.result;
+          //alert(b64);
+          b64video = b64.replace(/^data:video\/webm;base64,/, "")
+
+          fetch(SERVER + 'upload/', {
+            method: 'POST',
+            headers:{
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFtoken()
+            },        
+            body:JSON.stringify(b64video),
+
+          }).then((response) => {
+              if(!response.ok) {
+                  console.log('error!');
+              } 
+              console.log('ok!');
+              //アップロードボタンを押したら記録画面に遷移する
+              alert("受信しました！");
+              //return( res.text() );
+              location.href = 'http://localhost:8000/accounts/index/';
+            
+            }).then((text)  => {
+              //alert(text);
+              //let paeser = new DOMParser();
+              //let doc = parser.parseFromString(text, "text/html");
+              });
+      
+      }
+      reader.readAsDataURL(blob);
+  
+      
+
+    });
+    
+
+    //ミリ秒の表示ではなく、分とか秒に直すための関数, 他のところからも呼び出すので別関数として作る
+    //計算方法として135200ミリ秒経過したとしてそれを分とか秒に直すと -> 02:15:200
+    function updateTimetText(){
+
+      //h(時間) = 135200 / 60000*60ミリ秒で割った数の商　
+      var h = Math.floor(elapsedTime / 3600000);
+
+      //m(分) = 135200 / 60000ミリ秒で割った数の商　-> 2分
+      var m = Math.floor((elapsedTime % 3600000) / 60000 );
+
+      //s(秒) = 135200 % 60000ミリ秒で / 1000 (ミリ秒なので1000で割ってやる) -> 15秒
+      var s = Math.floor(((elapsedTime % 3600000) % 60000 ) / 1000 );
+
+      //ms(ミリ秒) = 135200ミリ秒を % 1000ミリ秒で割った数の余り
+      //var ms = elapsedTime % 1000;
+
+
+      //HTML 上で表示の際の桁数を固定する　例）3 => 03　、 12 -> 012
+      //javascriptでは文字列数列を連結すると文字列になる
+      //文字列の末尾2桁を表示したいのでsliceで負の値(-2)引数で渡してやる。
+      h = ('0' + h).slice(-2); 
+      m = ('0' + m).slice(-2); 
+      s = ('0' + s).slice(-2);
+      //ms = ('0' + ms).slice(-3);
+
+      console.log(h);
+
+      //HTMLのid　timer部分に表示させる　
+      timer.textContent = h + ':' + m + ':' + s;
+
+    }
+
+    //再帰的に使える用の関数
+    function countUp(){
+
+      //timerId変数はsetTimeoutの返り値になるので代入する
+      timerId = setTimeout(function(){
+
+          //経過時刻は現在時刻をミリ秒で示すDate.now()からstartを押した時の時刻(startTime)を引く
+          elapsedTime = Date.now() - startTime + timeToadd;
+          updateTimetText()
+
+          //countUp関数自身を呼ぶことで10ミリ秒毎に以下の計算を始める
+          countUp();
+
+      //1秒以下の時間を表示するために10ミリ秒後に始めるよう宣言
+      },100);
+    }
+
+    function getCSRFtoken(){
+      for(const c of document.cookie.split(";")) {
+          const cArray = c.split("=");
+          if(cArray[0] === "csrftoken") return cArray[1];
+      }
+    }
+
+
+  </script>
+
+</div>
+</body>
+</html>

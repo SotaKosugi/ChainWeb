@@ -1,0 +1,166 @@
+div.head{
+	position: relative;
+}
+
+#username{
+	position: absolute;
+	left: 10px;
+	top: 5px;
+}
+
+#chain{
+	width: 90px;
+    height: 90px;
+	position: absolute;
+	left: 150px;
+	top: 0px;
+}
+
+#headline{
+	position: absolute;
+	top: 85px;
+	left: px;
+}
+
+img.home_button{
+    width: 75px;
+    height: 75px;
+}
+
+div.home{
+   text-align: right;
+   position: absolute;
+   right: 10px;
+   top: 10px;
+}
+
+/* 画像をホバーした */
+img.home_button:hover{
+ 
+	/* 透明度を上げることで、画像の色を薄く見せる。*/
+	opacity:0.5;
+ 
+	/* リンクをホバーしたときのカーソルにする。*/
+	cursor: pointer;
+}
+ 
+/* 画像をクリックした瞬間 */
+img.home_button:active{
+ 
+	/* 要素を若干下に下げることで、押した感じを出す。*/
+ 
+	/* 今いる位置から相対的に3px下に配置する。*/
+	position: relative;
+	top: 3px;
+ 
+}
+
+div.goals{
+	position: relative;
+	top: 75px;
+	left: 0px;
+}
+
+img.goal_start{
+	cursor: pointer;
+	margin-left: 7px!important;
+	vertical-align: middle;
+	position: absolute;
+	top: 97px;
+	left:135px;
+}
+
+img.goal_end{
+	cursor: pointer;
+	margin-left: 7px!important;
+	vertical-align: middle;
+	position: absolute;
+	top: 97px;
+	left:285px;
+}
+
+#goal_start{
+	width: 80px;
+	position: absolute;
+	top: 100px; 
+	left: 60px;
+}
+
+#goal_end{
+	width: 80px;
+	position: absolute;
+	top: 100px; 
+	left: 210px;
+}
+
+#goal_time{
+	width: 80px;
+	position: absolute;
+	top: 130px; 
+	left: 60px;
+}
+
+#goal_change{
+	position: absolute;
+	top: 160px; 
+	left: 5px;
+}
+
+#goalsConfig{
+	position: absolute;
+	top: 10px;
+	left:150px;
+	
+}
+
+#nami{
+	position: absolute;
+	top: 82px;
+	left:175px;
+}
+
+#mokuhyou{
+	position: absolute;
+	top: 51px;
+	left: 5px;
+	
+}
+
+#kikan{
+	position: absolute;
+	top: 82px;
+	left: 5px;
+	
+}
+
+#jikan{
+	position: absolute;
+	top: 113px;
+	left: 5px;
+}
+
+#h{
+	position: absolute;
+	top: 113px;
+	left: 145px;
+}
+
+#centerline{
+	position: absolute;
+	top: 190px;
+	left: 20px;
+}
+
+div.videoList{
+	text-align: center;
+	position: absolute;
+	top: 240px;
+	left: 7.5px;
+
+}
+
+#kiroku{
+	position: absolute;
+	top: 190px;
+	left: 150px;		
+}

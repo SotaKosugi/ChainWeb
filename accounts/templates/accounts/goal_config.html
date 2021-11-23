@@ -1,0 +1,40 @@
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>目標設定</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'css/study.css' %}">
+</head>
+<body>
+
+<p>User: {{ user.username }}</p>    
+
+<a href="{% url 'index'  %}">ホーム&nbsp;&nbsp;</a>
+<a href="{% url 'studylog' %}">記録&nbsp;&nbsp;</a>
+<a href="{% url 'study' %}">勉強開始！&nbsp;&nbsp;</a>
+<a href="{% url 'goalconfig' %}">目標&nbsp;&nbsp;</a>
+<a href="{% url 'upload' %}">アップロード&nbsp;&nbsp;</a>
+<a href="{% url 'config' %}">設定&nbsp;&nbsp;</a>
+
+<p><a href="{% url 'logout' %}">ログアウト</a></p>
+
+<h1>目標設定画面</h1>
+
+<h3>今週の目標勉強時間を設定してください</h3>
+<div class="container">
+  <form method="post">
+  <!-- actionを付けない場合は、元のviewのfunctionに返す -->
+      {{ form.as_p }}
+      {% csrf_token %}
+      <input type="submit" class="btn btn-primary" value="決定">
+  </form>
+</div>
+
+<h3>{{ user.username }}さんの今週の目標勉強時間：<strong>{{ times.weekly_goal }}</strong>時間</h3>
+
+</body>
+
+</html>

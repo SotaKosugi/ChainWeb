@@ -1,0 +1,47 @@
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>アップロード</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'css/study.css' %}">
+</head>
+<body>
+
+<p>User: {{ user.username }}</p>    
+
+<a href="{% url 'index'  %}">ホーム&nbsp;&nbsp;</a>
+<a href="{% url 'studylog' %}">記録&nbsp;&nbsp;</a>
+<a href="{% url 'study' %}">勉強開始！&nbsp;&nbsp;</a>
+<a href="{% url 'goalconfig' %}">目標&nbsp;&nbsp;</a>
+<a href="{% url 'upload' %}">アップロード&nbsp;&nbsp;</a>
+<a href="{% url 'config' %}">設定&nbsp;&nbsp;</a>
+
+<p><a href="{% url 'logout' %}">ログアウト</a></p>
+
+<h2>アップロード画面</h2>
+
+<form class="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <p><strong>Video:</strong><input type="file" name="webm" value="" required></p>
+  <p><input type="submit" name="btn_upload" value="アップロード"></p>
+</form>
+
+<video controls src="{{b64video.image}}"></video>
+
+<h3>ファイル名：{{ name }}</h3>
+<h3>サイズ：{{ size }}バイト</h3>
+<h3>タイプ：{{ type }}</h3>
+
+<!--
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+-->
+ 
+</body>
+</html>

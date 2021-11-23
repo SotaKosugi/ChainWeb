@@ -1,0 +1,46 @@
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>ホーム</title>
+
+  <link rel="stylesheet" href="{% static 'css/background_image.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+<div class="head" >
+  <p id="username"><font size="4">User: {{ user.username }}</font></p>    
+  <img src="../../static/icon_chain.svg" alt="chainロゴ" id="chain">
+
+  <div class="study">
+    <a href="{% url 'logout' %}" onclick="return confirm('ログアウトします。よろしいですか？')"><img src="../../static/icon_logout.svg" alt="ログアウト" class="logout_button" ontouchstart=""></a>
+  </div>
+
+</div>
+
+<hr id="headline" size="1px" width="375px" color="#87cefa">
+
+<div class="goal">
+  <p id="mokuhyou"><font size="5">目標</font></p>
+  <div class="radius">
+    <p id="kikan"><font size="4">{{ goal.goal_start }} ~ {{ goal.goal_end }}</font></p>
+    <p id="tasseiritu"><font size="5"><strong>{{ goal.study_time }}</strong> h</font></p>
+  </div>
+</div>
+
+<div class="mainbuttons">
+  <div class="study">
+    <a href="{% url 'study' %}"><img src="../../static/icon_study.svg" alt="勉強" class="study_button" ontouchstart=""></a>
+  </div>
+
+  <div class="log">
+    <a href="{% url 'studylog' %}"><img src="../../static/icon_log.svg" alt="記録" class="log_button" ontouchstart=""></a>
+  </div>
+</div>
+
+</body>
+
+
+</html>

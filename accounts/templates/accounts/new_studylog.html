@@ -1,0 +1,154 @@
+{% load static %}
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>勉強記録</title>
+    <link rel="stylesheet" href="{% static 'css/studylog.css' %}">
+    <link rel="stylesheet" href="{% static 'css/background_image.css' %}">
+  </head>
+
+    <body>
+        <div class="head">
+          <p id="username"><font size="4">User: {{ user.username }}</font></p>
+          <img src="../../static/icon_chain.svg" alt="chainロゴ" id="chain">
+
+          <div class="home">
+            <a href="{% url 'index' %}"><img src="../../static/icon_home.svg" alt="ホーム" class="home_button" ontouchstart=""></a>
+          </div>
+        </div>
+
+        <hr id="headline" size="1px" width="375px" color="#87cefa">
+        
+        <div class="goals">
+          <p id="goalsConfig"><font size="5">目標設定</font></p>
+          <p id="nami"><font size="3">～</font></p>
+          <p id="mokuhyou"><font size="4">目標：{{ goal.goal_start }} ~ {{ goal.goal_end }} : <strong>{{ goal.study_time }}</strong> h</font></p>
+          <p id="kikan"><font size="4">期間：</font></p>
+          <p id="jikan"><font size="4">時間：</font></p>
+          <p id="h"><font size="4">h</font></p>
+          <input type="text" id="goal_start" placeholder="開始日">
+          <input type="text" id="goal_end" placeholder="終了日">
+          <input type="text" id="goal_time"placeholder="目標時間">
+          <button id="goal_change" onclick="changeGoal()">変更</button>
+
+          <hr id="centerline" size="1px" width="335px" color="#000000">
+
+          <p id="kiroku"><font size="5">勉強記録</font></p>
+          <div class="videoList">
+            {% for path in videoPath %}
+            {% if user.userID == path.userID %}
+              <p>
+                <div>{{ path.published_date }}</div>
+  
+                <video controls width="360" height="240">
+  
+                    <source src="{{path.videoPath}}" type="video/webm">
+                    <br><br>
+  
+                </video>
+              </p>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
+        <script>
+
+          //目標開始日の処理
+          $(function() {
+            $('#goal_start').datepicker({
+              changeYear: true,    // 年を表示
+              changeMonth: true,   // 月を選択
+              minDate: new Date(), // 前日以前は選択不可
+              maxDate: '+1y +6m',  // 1年半後まで選択可
+              buttonImage: "../../static/icon_calendar.svg",        // カレンダーアイコン画像
+              buttonText: "カレンダーから選択", // ツールチップ表示文言
+              buttonImageOnly: true,           // 画像として表示
+              showOn: "both"                   // カレンダー呼び出し元の定義
+
+            }).next(".ui-datepicker-trigger").addClass("goal_start");
+          });
+
+          //目標終了日の処理
+          $(function() {
+            $('#goal_end').datepicker({
+              changeYear: true,    // 年を表示
+              changeMonth: true,   // 月を選択
+              minDate: new Date(), // 前日以前は選択不可
+              maxDate: '+1y +6m',  // 1年半後まで選択可
+              buttonImage: "../../static/icon_calendar.svg",        // カレンダーアイコン画像
+              buttonText: "カレンダーから選択", // ツールチップ表示文言
+              buttonImageOnly: true,           // 画像として表示
+              showOn: "both"                   // カレンダー呼び出し元の定義
+
+            }).next(".ui-datepicker-trigger").addClass("goal_end");
+          });
+
+
+          const SERVER = "https://www.chainsupervisor.net/accounts/";
+
+          //目標設定を変更するボタンをクリックしたときの処理
+          function changeGoal(){
+
+            let start = parseInt(document.getElementById('goal_start').value.replace(/\//g,''));//「/」を消して、文字列を整数に変換している
+            let end = parseInt(document.getElementById('goal_end').value.replace(/\//g,''));//「/」を消して、文字列を整数に変換している
+            let time = parseInt(document.getElementById('goal_time').value);//文字列を整数に変換している
+
+            console.log(start);
+            console.log(end);
+            console.log(time);
+            console.log(start+end);
+
+            if( ( start < end ) && ( time < (end - start + 1)*24) && (time > 0) && (window.confirm('本当に変更しますか？')) ){
+
+              let goals = {
+                "start" : document.getElementById('goal_start').value,
+                "end" : document.getElementById('goal_end').value,
+                "time" : time,
+              }
+
+              fetch(SERVER + 'goalconfig/', {
+                method: 'POST',
+                headers:{
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFtoken()
+                },        
+                body:JSON.stringify(goals),
+
+              }).then((response) => {
+                  if(!response.ok) {
+                      console.log('error!');
+                  }
+
+                  location.href = 'https://www.chainsupervisor.net/accounts/studylog/'; 
+
+                })
+
+
+            }else{
+              alert("入力を修正してください");
+            }
+          }
+
+          function getCSRFtoken(){
+            for(const c of document.cookie.split(";")) {
+                const cArray = c.split("=");
+                if(cArray[0] === "csrftoken") return cArray[1];
+            }
+          }
+
+         
+        </script>  
+    </body>
+    <script>
+
+     
+      
+    </script>
+</html>

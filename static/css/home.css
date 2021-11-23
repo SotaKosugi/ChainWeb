@@ -1,0 +1,165 @@
+div.head{
+	position: relative;
+}
+
+#username{
+	position: absolute;
+	left: 10px;
+	top: 5px;
+}
+
+#chain{
+	width: 90px;
+    height: 90px;
+	position: absolute;
+	left: 150px;
+	top: 0px;
+}
+
+img.logout_button{
+    width: 75px;
+    height: 75px;
+    position: absolute;
+	top: 10px;
+    right: 10px;
+}
+
+#headline{
+	position: absolute;
+	top: 85px;
+	left: px;
+}
+
+/*↑ここまでヘッダ*/
+
+/*以下目標表示部分*/
+
+div.goal{
+	position: relative;
+	top: 110px;
+	left: 0px;
+}
+
+div.radius{
+	position: absolute;
+	top:50px;
+	left: 30px;
+	border: 2px solid rgb(122, 206, 245);
+	border-radius: 10px;
+	width: 305px;
+	height: 80px;
+	padding: 5px;
+   }
+
+
+#mokuhyou{
+	position: absolute;
+	left: 170px;
+
+}
+
+#kikan{
+	position: absolute;
+	top: 0px;
+	left: 35px;
+}
+
+#tasseiritu{
+	position: absolute;
+	top: 40px;
+	left: 140px;
+}
+
+
+/*以下勉強ボタンと記録ボタン*/
+div.mainbuttons{
+	position: relative;
+	top: 200px;
+}
+
+img.study_button{
+    width: 200px;
+    height: 200px;
+	position: absolute;
+	top:100px;
+	left: 87px;
+}
+
+img.log_button{
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 380px;
+	left: 87px;
+    
+}
+
+/* 画像をホバーした */
+img.study_button:hover{
+ 
+	/* 透明度を上げることで、画像の色を薄く見せる。*/
+	opacity:0.5;
+ 
+	/* リンクをホバーしたときのカーソルにする。*/
+	cursor: pointer;
+}
+ 
+/* 画像をクリックした瞬間 */
+img.study_button:active{
+ 
+	/* 要素を若干下に下げることで、押した感じを出す。*/
+ 
+	/* 今いる位置から相対的に3px下に配置する。*/
+	position: absolute;
+	top: 103px;
+ 
+}
+
+/* 画像をホバーした */
+img.log_button:hover{
+ 
+	/* 透明度を上げることで、画像の色を薄く見せる。*/
+	opacity:0.5;
+ 
+	/* リンクをホバーしたときのカーソルにする。*/
+	cursor: pointer;
+}
+ 
+/* 画像をクリックした瞬間 */
+img.log_button:active{
+ 
+	/* 要素を若干下に下げることで、押した感じを出す。*/
+ 
+	/* 今いる位置から相対的に3px下に配置する。*/
+	position: absolute;
+	top: 383px;
+ 
+}
+
+/* 画像をホバーした */
+img.logout_button:hover{
+ 
+	/* 透明度を上げることで、画像の色を薄く見せる。*/
+	opacity:0.5;
+ 
+	/* リンクをホバーしたときのカーソルにする。*/
+	cursor: pointer;
+}
+ 
+/* 画像をクリックした瞬間 */
+img.logout_button:active{
+ 
+	/* 要素を若干下に下げることで、押した感じを出す。*/
+ 
+	/* 今いる位置から相対的に3px下に配置する。*/
+	position: absolute;
+	top: 13px;
+ 
+}
+
+
+
+
+
+
+

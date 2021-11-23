@@ -1,0 +1,84 @@
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>ホーム</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'css/study.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+<p>User: {{ user.username }}</p>    
+
+<a href="{% url 'index'  %}">ホーム&nbsp;&nbsp;</a>
+<a href="{% url 'studylog' %}">記録&nbsp;&nbsp;</a>
+<a href="{% url 'study' %}">勉強開始！&nbsp;&nbsp;</a>
+<a href="{% url 'goalconfig' %}">目標&nbsp;&nbsp;</a>
+<a href="{% url 'upload' %}">アップロード&nbsp;&nbsp;</a>
+<a href="{% url 'config' %}">設定&nbsp;&nbsp;</a>
+
+<p><a href="{% url 'logout' %}">ログアウト</a></p>
+
+<img src="../../static/icon_study.svg" class="home_button" ontouchstart="">
+<img src="../../static/icon_log.svg" class="home_button" ontouchstart="">
+
+<h2>ホーム画面</h2>
+
+<h3>今週の目標：<strong>{{ times.weekly_goal }}</strong>時間</h3>
+<h3 id="timer">今週の勉強時間：00時間00分</h3>
+
+<h3>最近の勉強の様子</h3>
+{% if user.userID == latest_image.userID %}
+<p>Date:{{ latest_image.published_date }}</p>
+<img src="data:image/png;base64,{{latest_image.image}}"/><!--勉強中の写真を表示-->
+<img src="{% url 'plot' %}" width=450 height=400><!--週間勉強時間のグラフを表示-->
+{% endif %}
+
+</body>
+<script>
+
+var timer = document.getElementById('timer');
+
+//経過時刻を更新するための変数。 初めはだから0で初期化
+
+var data = JSON.parse('{{ json_times|safe }}');
+
+var elapsedTime = data.jsonTimes;
+//console.log(elapsedTime)
+
+updateTimetText();
+
+function updateTimetText(){
+
+//h(時間) = 135200 / 60000*60ミリ秒で割った数の商　
+var h = Math.floor(elapsedTime / 3600000);
+
+//m(分) = 135200 / 60000ミリ秒で割った数の商　-> 2分
+var m = Math.floor((elapsedTime % 3600000) / 60000 );
+
+//s(秒) = 135200 % 60000ミリ秒で / 1000 (ミリ秒なので1000で割ってやる) -> 15秒
+var s = Math.floor(((elapsedTime % 3600000) % 60000 ) / 1000 );
+
+  //HTML 上で表示の際の桁数を固定する　例）3 => 03　、 12 -> 012
+  //javascriptでは文字列数列を連結すると文字列になる
+  //文字列の末尾2桁を表示したいのでsliceで負の値(-2)引数で渡してやる。
+  h = ('0' + h).slice(-2); 
+  m = ('0' + m).slice(-2); 
+  s = ('0' + s).slice(-2); 
+
+  //console.log(h);
+  //console.log(m);
+
+ 
+  //HTMLのid　timer部分に表示させる　
+  timer.textContent = '今週の勉強時間：'+ h + '時間' + m + '分' + s +'秒';
+  
+
+}
+
+</script>
+
+</html>
