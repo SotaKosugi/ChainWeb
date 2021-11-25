@@ -7,7 +7,8 @@
 https://www.chainsupervisor.net/accounts/login/
 
 に接続していただくと処理は重いですが、アプリとしては動作します。
-（ユーザー名：sasaki@gmail.com,パスワード：sasaki）
+
+（ユーザー名とパスワードはエントリーシート中に記載してあります。）
 
 ただし、実装の関係上、Android・Windowsのchromeブラウザでのみ動作します。
 
