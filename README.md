@@ -4,7 +4,7 @@
 
 大変申し訳ないのですが、コードの中には未実装のものや、不要になったものも含まれており整理されていません。
 
-https://www.chainsupervisor.net
+https://www.chainsupervisor.net/accounts/login/
 
 に接続していただくと処理は重いですが、アプリとしては動作します。
 （ユーザー名：sasaki@gmail.com,パスワード：sasaki）
