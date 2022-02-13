@@ -18,4 +18,8 @@ https://www.chainsupervisor.net/accounts/login/
 
 iOSやMacOSでは動作しません。
 
+https://drive.google.com/drive/folders/13zMKhCXSSpastRmhL5T7Ab0WudJ_OGPQ?usp=sharing
+
+上記URL上で本アプリのデモ動画（ChainWeb版.mp4）を公開しております。
+
 未熟なアプリですが、見ていただけると幸いです。
